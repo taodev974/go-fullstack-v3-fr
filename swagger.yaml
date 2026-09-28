@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  title: Backend API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /test:
+    get:
+      summary: Test du backend
+      responses:
+        "200":
+          description: Réponse OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
