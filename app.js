@@ -1,12 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+require("dotenv").config();
+const Thing = require("./models/Thing");
 
 mongoose
-  .connect(
-    "mongodb+srv://user_jonbill:qOHb4mthLWMWdpVO@cluster0.jzxsref.mongodb.net/?appName=Cluster0",
-    {},
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch((error) => console.log("Connexion à MongoDB échouée !", error));
 
@@ -26,34 +25,20 @@ app.use((req, res, next) => {
 });
 
 app.post("/api/stuff", (req, res, next) => {
-  console.log(req.body);
-  res.status(201).json({
-    message: "Objet créé",
+  delete req.body._id;
+  const thing = new Thing({
+    ...req.body,
   });
+  thing
+    .save()
+    .then(() => res.status(201).json({ message: "Objet enregistré" }))
+    .catch((error) => res.status(400).json({ error }));
 });
 
 app.get("/api/stuff", (req, res, next) => {
-  const stuff = [
-    {
-      _id: "oeihfzeoi",
-      title: "Mon premier objet",
-      description: "Les infos de mon premier objet",
-      imageUrl:
-        "https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg",
-      price: 4900,
-      userId: "qsomihvqios",
-    },
-    {
-      _id: "oeihfzeomoihi",
-      title: "Mon deuxième objet",
-      description: "Les infos de mon deuxième objet",
-      imageUrl:
-        "https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg",
-      price: 2900,
-      userId: "qsomihvqios",
-    },
-  ];
-  res.status(200).json(stuff);
+  Thing.find()
+    .then((things) => res.status(200).json(things))
+    .catch((error) => res.status(400).json({ error }));
 });
 
 module.exports = app;

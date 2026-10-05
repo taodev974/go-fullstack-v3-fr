@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/taodev974/go-fullstack-v3-fr#readme",
   "dependencies": {
+    "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "mongoose": "^9.10.2"
   }
