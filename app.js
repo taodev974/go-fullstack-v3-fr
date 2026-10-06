@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 require("dotenv").config();
-const Thing = require("./models/Thing");
+const stuffRoute = require("./routes/stuff");
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -24,21 +24,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/api/stuff", (req, res, next) => {
-  delete req.body._id;
-  const thing = new Thing({
-    ...req.body,
-  });
-  thing
-    .save()
-    .then(() => res.status(201).json({ message: "Objet enregistré" }))
-    .catch((error) => res.status(400).json({ error }));
-});
+app.use(bodyParser.json());
 
-app.get("/api/stuff", (req, res, next) => {
-  Thing.find()
-    .then((things) => res.status(200).json(things))
-    .catch((error) => res.status(400).json({ error }));
-});
+app.use("/api/stuff", stuffRoute);
 
 module.exports = app;
