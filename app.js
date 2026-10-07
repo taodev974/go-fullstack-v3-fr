@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 require("dotenv").config();
 const stuffRoute = require("./routes/stuff");
+const userRoutes = require("./routes/user");
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -23,9 +24,10 @@ app.use((req, res, next) => {
   );
   next();
 });
-
+const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 app.use("/api/stuff", stuffRoute);
+app.use("/api/auth", userRoutes);
 
 module.exports = app;
